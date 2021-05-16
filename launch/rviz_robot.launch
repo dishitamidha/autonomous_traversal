@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="rvizconfig" default="$(find urdf_tutorial)/rviz/urdf.rviz"/>
+  <arg name="model" default="$(find att)/urdf/robot.urdf.xacro"/>
+  <param name="robot_description" command="cat '$(find att)/urdf/robot.urdf.xacro'"/>
+
+<!-- new modification -->
+<!--<arg name="use_gui" default="true" doc="Should the joint_state_publisher use a GUI for controlling joint states" />
+  <node pkg="joint_state_publisher" type="joint_state_publisher" name="joint_state_publisher" output="screen" unless="$(arg use_gui)" />
+ <node pkg="joint_state_publisher_gui" type="joint_state_publisher_gui" name="joint_state_publisher_gui" output="screen" if="$(arg use_gui)" />-->
+
+
+  <!-- Combine joint values -->
+ <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" respawn="false" output="screen"/>
+
+  <!-- Show in Rviz   -->
+<node name="rviz" pkg="rviz" type="rviz" args="-d $(find att)/rvizconfig/robotrvizconfig.rviz"/>
+<!--args="-d $(find att)/rvizconfig/robotrvizconfig.rviz"-->
+ 
+  <param name="robot_description" command="$(find xacro)/xacro $(find att)/urdf/robot.urdf.xacro"/>
+  <param name="use_gui" value="true"/>
+
+
+  <include file="$(find att)/launch/gazebo.launch">
+    <arg name="model" value="$(arg model)"/>
+  </include>
+
+  <node pkg="teleop_twist_keyboard" name="teleop_twist_keyboard" type="teleop_twist_keyboard.py" />
+  <node pkg = 'tf' type ='static_transform_publisher' name = 'tf0' args = "0 0 0 -3.14 0 -1.58 kinect_link new_frame 1000"/>
+  <!-- <node pkg = 'tf' type ='static_transform_publisher' name = 'tf1' args = "0 0 0 -3.14 0 -1.58 kinect_link new_frame 1000"/>--> -->
+
+</launch>
+
+
+  

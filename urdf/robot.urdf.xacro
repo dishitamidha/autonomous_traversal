@@ -1,0 +1,500 @@
+<?xml version="1.0" ?>
+<robot name="robot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  
+<!--including plugins-->
+<xacro:include filename="$(find att)/urdf/robot_plugin.gazebo" />
+
+<!--using xacro to set values of camera-->
+  <xacro:property name="camera_size" value="0.005"/>
+  <xacro:property name="camera_origin_x" value="0.125"/>
+  <xacro:property name="camera_origin_y" value="0"/>
+  <xacro:property name="camera_origin_z" value="0.15"/>
+
+  <xacro:property name="height3" value="1" />
+  <xacro:property name="axel_offset" value="0.05" />
+
+<!--using xacro to set values of chassis-->
+  <xacro:property name="mower_inertia_xx" value="0.026302083" /><!--0.420833333333333-->
+  <xacro:property name="mower_inertia_yy" value="0.026302083" /><!--0.420833333333333-->
+  <xacro:property name="mower_inertia_zz" value="0.052083333"/><!--0.833333333333333-->
+  <xacro:property name="mower_frame_width" value="0.25" />
+  <xacro:property name="mower_frame_length" value="0.25" />
+  <xacro:property name="mower_frame_height" value="0.025" />
+
+<!--using xacro to set values of link wheel inertia -->
+  <xacro:property name="wheel_inertia_xx" value="0.0002379947917" /><!--0.000526666666667   0.0025866667-->
+  <xacro:property name="wheel_inertia_yy" value="0.0002379947917" /><!--0.000526666666667   0.0025866667-->
+  <xacro:property name="wheel_inertia_zz" value="0.00047265625"/><!--0.001  0.00484 -->
+
+<!--using xacro to set values of wheel dimensions-->
+  <xacro:property name="wheel_length" value="0.01" />
+  <xacro:property name="wheel_radius" value="0.06875" />
+  <xacro:property name="wheel_mass" value="0.2" />
+  
+<!--using xacro to set values of laser-->
+  <xacro:property name="laser_size" value="0.01"/>
+  <xacro:property name="laser_origin_x" value="0.125"/>
+  <xacro:property name="laser_origin_y" value="0"/>
+  <xacro:property name="laser_origin_z" value="0.15"/>
+
+<!--using xacro to set values of IMU-->
+  <xacro:property name="IMU_size" value="0.005"/>
+  <xacro:property name="IMU_origin_x" value="0"/>
+  <xacro:property name="IMU_origin_y" value="0"/>
+  <xacro:property name="IMU_origin_z" value="0.015"/>
+
+<!--using xacro to set values of GPS-->
+  <xacro:property name="GPS_size" value="0.005"/>
+  <xacro:property name="GPS_origin_x" value="0"/>
+  <xacro:property name="GPS_origin_y" value="0"/>
+  <xacro:property name="GPS_origin_z" value="0.025"/>
+
+<!--using xacro to set values of kinect-->
+  <xacro:property name="kinect_size" value="${camera_size}"/>
+  <xacro:property name="kinect_origin_x" value="0.125"/>
+  <xacro:property name="kinect_origin_y" value="0"/>
+  <xacro:property name="kinect_origin_z" value="0.165"/>
+
+<!--using xacro to set values of sonar-->
+  <xacro:property name="sonar_size" value="0.005"/>
+
+<!--using xacro to set values of sonar ir front-->
+  <xacro:property name="sonar_ir_front_origin_x" value="0"/>
+  <xacro:property name="sonar_ir_front_origin_y" value="-0.125"/>
+  <xacro:property name="sonar_ir_front_origin_z" value="0.25"/>
+
+<!--using xacro to set values of sonar front -->
+
+  <xacro:property name="sonar_front_origin_x" value="0"/>
+  <xacro:property name="sonar_front_origin_y" value="-0.125"/>
+  <xacro:property name="sonar_front_origin_z" value="0.06"/>
+  
+  <!--using xacro to set values of sonar ir left-->
+  <xacro:property name="sonar_ir_left_origin_x" value="0"/>
+  <xacro:property name="sonar_ir_left_origin_y" value="0.125"/>
+  <xacro:property name="sonar_ir_left_origin_z" value="0.25"/>
+
+<!--using xacro to set values of sonar left -->
+
+  <xacro:property name="sonar_left_origin_x" value="0"/>
+  <xacro:property name="sonar_left_origin_y" value="0.125"/>
+  <xacro:property name="sonar_left_origin_z" value="0.06"/>
+  
+  
+  <!-- chassis -->
+  <link name="link_chassis">
+
+    <pose>0 0 0 0 0 0</pose>
+    <inertial>
+      <mass value="5"/>
+      <origin rpy="0 0 0" xyz="0 0 0.08125"/>
+      <inertia ixx="${mower_inertia_xx}" ixy="0" ixz="0" iyy="${mower_inertia_yy}" iyz="0" izz="${mower_inertia_zz}"/>
+    </inertial>
+
+    <collision name="collision_chassis">
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="${mower_frame_length} ${mower_frame_width} ${mower_frame_height}"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="${mower_frame_length} ${mower_frame_width} ${mower_frame_height}"/>
+      </geometry>
+    </visual>
+  </link>
+
+
+  <!-- link_rear_right_wheel -->
+  <link name="link_right_wheel">
+    <inertial>
+      <mass value="0.2"/>
+      <cylinder_inertia m="0.2" r="0.06875" h="0.01"/>
+      <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+      <inertia ixx="${wheel_inertia_xx}" ixy="0" ixz="0" iyy="${wheel_inertia_yy}" iyz="0" izz="${wheel_inertia_zz}"/>
+    </inertial>
+
+    <collision name="link_right_wheel_collision">
+      <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="${wheel_length}" radius="${wheel_radius}"/>
+      </geometry>
+    </collision>
+    <visual name="link_right_wheel_visual">
+      <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="${wheel_length}" radius="${wheel_radius}"/>
+      </geometry>
+    </visual>
+  </link>
+  
+  <joint name="joint_right_wheel" type="continuous">
+    <origin rpy="0 0 0" xyz="-0.125 0.13 0"/>
+    <child link="link_right_wheel"/>
+    <parent link="link_chassis"/>
+    <axis rpy="0 0 0" xyz="0 1 0"/>
+    <limit effort="100" velocity="100"/>
+    <joint_properties damping="0" friction="1.0"/>
+  </joint>
+
+<!-- link_rear_left_wheel -->
+  
+  <link name="link_left_wheel">
+    <inertial>
+      <mass value="0.2"/>
+        <cylinder_inertia m="0.2" r="0.06875" h="0.01"/>
+      <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+      <inertia ixx="${wheel_inertia_xx}" ixy="0" ixz="0" iyy="${wheel_inertia_yy}" iyz="0" izz="${wheel_inertia_zz}"/>
+    </inertial>
+
+    <collision name="link_left_wheel_collision">
+      <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="${wheel_length}" radius="${wheel_radius}"/>
+      </geometry>
+    </collision>
+    <visual name="link_left_wheel_visual">
+      <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="${wheel_length}" radius="${wheel_radius}"/>
+      </geometry>
+    </visual>
+  </link>
+  
+  <joint name="joint_left_wheel" type="continuous">
+    <origin rpy="0 0 0" xyz="-0.125 -0.13 0"/>
+    <child link="link_left_wheel"/>
+    <parent link="link_chassis"/>
+    <axis rpy="0 0 0" xyz="0 1 0"/>
+    <limit effort="100" velocity="100"/>
+    <joint_properties damping="0" friction="1.0"/>
+  </joint>
+
+
+<!-- link_front_right_wheel -->
+   <link name="link_right_wheel_front">
+    <inertial>
+      <mass value="0.2"/>
+      <cylinder_inertia m="0.2" r="0.06875" h="0.01"/>
+      <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+      <inertia ixx="${wheel_inertia_xx}" ixy="0" ixz="0" iyy="${wheel_inertia_yy}" iyz="0" izz="${wheel_inertia_zz}"/>
+    </inertial>
+
+    <collision name="link_right_wheel_front_collision">
+      <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="${wheel_length}" radius="${wheel_radius}"/>
+      </geometry>
+    </collision>
+    <visual name="link_right_wheel_front_visual">
+      <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="${wheel_length}" radius="${wheel_radius}"/>
+      </geometry>
+    </visual>
+  </link>
+  
+  <joint name="joint_right_wheel_front" type="continuous">
+    <origin rpy="0 0 0" xyz="0.125 0.13 0"/>
+    <child link="link_right_wheel_front"/>
+    <parent link="link_chassis"/>
+    <axis rpy="0 0 0" xyz="0 1 0"/>
+    <limit effort="100" velocity="100"/>
+    <joint_properties damping="0" friction="1.0"/>
+  </joint>
+  
+<!-- link_front_left_wheel -->
+  <link name="link_left_wheel_front">
+    <inertial>
+      <mass value="0.2"/>
+      <cylinder_inertia m="0.2" r="0.06875" h="0.01"/>
+      <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+      <inertia ixx="${wheel_inertia_xx}" ixy="0" ixz="0" iyy="${wheel_inertia_yy}" iyz="0" izz="${wheel_inertia_zz}"/>
+    </inertial>
+
+    <collision name="link_left_wheel_front_collision">
+      <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="${wheel_length}" radius="${wheel_radius}"/>
+      </geometry>
+      
+    </collision>
+    <visual name="link_left_wheel_front_visual">
+      <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="${wheel_length}" radius="${wheel_radius}"/>
+      </geometry>
+      
+    </visual>
+  </link>
+  
+  <joint name="joint_left_wheel_front" type="continuous">
+    <origin rpy="0 0 0" xyz="0.125 -0.13 0"/>
+    <child link="link_left_wheel_front"/>
+    <parent link="link_chassis"/>
+    <axis rpy="0 0 0" xyz="0 1 0"/>
+    <limit effort="100" velocity="100"/>
+    <joint_properties damping="0" friction="1.0"/>
+  </joint>
+
+
+<!--CAMERA-->
+<link name="camera">
+    <visual>
+      <geometry>
+        <box size="${camera_size} ${camera_size} ${camera_size}"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="${camera_size} ${camera_size} ${camera_size}"/>
+      </geometry>
+    </collision>
+
+    <inertial>
+      <mass value="1e-5" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+   
+  </link>
+
+  <joint name="camera_joint" type="fixed">
+    <origin xyz="${camera_origin_x} ${camera_origin_y} ${camera_origin_z}" rpy="0 0 0"/>
+    <parent link="link_chassis"/>
+    <child link="camera"/>
+  </joint>
+
+
+
+  <!--LASER SCANNER-->
+   <link name="hokuyo_link">
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+    <box size="${laser_size} ${laser_size} ${laser_size}"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://group_task2/meshes/hokuyo.dae" scale="0.3 0.3 0.3"/>
+         
+      </geometry>
+    </visual>
+
+    <inertial>
+      <mass value="1e-5" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+  </link>
+    <joint name="hokuyo_joint" type="fixed">
+    <axis xyz="0 1 0" />
+    <origin xyz="${laser_origin_x} ${laser_origin_y} ${laser_origin_z}" rpy="0 0 0"/>
+    <parent link="link_chassis"/>
+    <child link="hokuyo_link"/>
+  </joint>
+
+
+
+
+<!--IMU SENSOR-->
+ 
+<link name="imu_link">
+  <inertial>
+    <mass value="0.001"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.0001"/>
+  </inertial>
+  <visual>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <geometry>
+      <box size="${IMU_size} ${IMU_size} ${IMU_size}"/>
+    </geometry>
+    <material name="red"/>  
+  </visual>
+  <collision>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <geometry>
+      <box size="${IMU_size} ${IMU_size} ${IMU_size}"/>
+    </geometry>
+  </collision>
+</link>
+<joint name="imu_joint" type="fixed">
+    <axis xyz="1 0 0"/>      
+    <origin xyz="${IMU_origin_x} ${IMU_origin_y} ${IMU_origin_z}"/>
+    <parent link="link_chassis"/>
+    <child link="imu_link"/>
+  </joint>
+ 
+
+
+<!--GPS SENSOR-->
+<link name="gps_link">
+  <inertial>
+    <mass value="0.001"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.0001"/>
+  </inertial>
+  <visual>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <geometry>
+      <box size="${GPS_size} ${GPS_size} ${GPS_size}"/>
+    </geometry>
+    <material name="red"/>  
+  </visual>
+  <collision>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <geometry>
+      <box size="${GPS_size} ${GPS_size} ${GPS_size}"/>
+    </geometry>
+  </collision>
+</link>
+<joint name="gps_joint" type="fixed">
+    <axis xyz="0.25 0 0"/>      
+    <origin xyz="${GPS_origin_x} ${GPS_origin_y} ${GPS_origin_z}"/>
+    <parent link="link_chassis"/>
+    <child link="gps_link"/>
+  </joint>
+
+
+<!--KINECT-->
+
+<link name="kinect_link">
+    <visual>
+      <geometry>
+        <box size="${kinect_size} ${kinect_size} ${kinect_size}"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="${kinect_size} ${kinect_size} ${kinect_size}"/>
+      </geometry>
+    </collision>
+
+
+    <inertial>
+      <mass value="1e-5" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+   
+  </link>
+
+  <joint name="kinect_joint" type="fixed">
+    <origin xyz="${kinect_origin_x} ${kinect_origin_y} ${kinect_origin_z}" rpy="0 0 0"/>
+    <parent link="link_chassis"/>
+    <child link="kinect_link"/>
+
+  </joint>
+
+  <!--SONAR right-->
+  <joint name="ir_front_joint" type="fixed">
+    <axis xyz="0 1 0" />
+    <origin rpy="0 0 -1.5708" xyz="${sonar_ir_front_origin_x} ${sonar_ir_front_origin_y} ${sonar_ir_front_origin_z}" />
+    <parent link="link_chassis"/>
+    <child link="base_ir_front"/>
+</joint>
+<link name="base_ir_front">
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 1.5708"/>
+      <geometry>
+        <box size="${sonar_size} ${sonar_size} ${sonar_size}"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 1.5708"/>
+      <geometry>
+        <box size="${sonar_size} ${sonar_size} ${sonar_size}"/>
+      </geometry>
+    </visual>
+    <inertial>
+      <mass value="1e-5" />
+      <origin xyz="0 0 0" rpy="0 0 1.5708"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0"      izz="1e-6" />
+    </inertial>
+</link>
+<joint name="sonar_front_joint" type="fixed">
+    <axis xyz="0 1 0" />
+    <origin rpy="0 0 -1.5708" xyz="${sonar_front_origin_x} ${sonar_front_origin_y} ${sonar_front_origin_z}" />
+    <parent link="link_chassis"/>
+    <child link="base_sonar_front"/>
+</joint>
+<link name="base_sonar_front">
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 1.5708"/>
+      <geometry>
+        <box size="${sonar_size} ${sonar_size} ${sonar_size}"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 1.5708"/>
+      <geometry>
+        <box size="${sonar_size} ${sonar_size} ${sonar_size}"/>
+      </geometry>
+    </visual>
+    <inertial>
+      <mass value="1e-5" />
+      <origin xyz="0 0 0" rpy="0 0 1.5708"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+ </link>
+
+   <!--SONAR Left-->
+  <joint name="ir_left_joint" type="fixed">
+    <axis xyz="0 1 0" />
+    <origin rpy="0 0 1.5708" xyz="${sonar_ir_left_origin_x} ${sonar_ir_left_origin_y} ${sonar_ir_left_origin_z}" />
+    <parent link="link_chassis"/>
+    <child link="base_ir_left"/>
+</joint>
+<link name="base_ir_left">
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="${sonar_size} ${sonar_size} ${sonar_size}"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="${sonar_size} ${sonar_size} ${sonar_size}"/>
+      </geometry>
+    </visual>
+    <inertial>
+      <mass value="1e-5" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0"      izz="1e-6" />
+    </inertial>
+</link>
+<joint name="sonar_left_joint" type="fixed">
+    <axis xyz="0 1 0" />
+    <origin rpy="0 0 1.5708" xyz="${sonar_left_origin_x} ${sonar_left_origin_y} ${sonar_left_origin_z}" />
+    <parent link="link_chassis"/>
+    <child link="base_sonar_left"/>
+</joint>
+<link name="base_sonar_left">
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="${sonar_size} ${sonar_size} ${sonar_size}"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="${sonar_size} ${sonar_size} ${sonar_size}"/>
+      </geometry>
+    </visual>
+    <inertial>
+      <mass value="1e-5" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+ </link>
+
+</robot>
