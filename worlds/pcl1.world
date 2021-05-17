@@ -481,7 +481,7 @@
         </sensor>
         <velocity_decay/>
         <sensor name='head_hokuyo_sensor' type='gpu_ray'>
-          <visualize>0</visualize>
+          <visualize>1</visualize>
           <update_rate>40</update_rate>
           <ray>
             <scan>
@@ -531,7 +531,7 @@
         </sensor>
         <velocity_decay/>
         <sensor name='TeraRanger1' type='ray'>
-          <visualize>0</visualize>
+          <visualize>1</visualize>
           <update_rate>50</update_rate>
           <ray>
             <scan>
@@ -568,7 +568,7 @@
         </sensor>
         <velocity_decay/>
         <sensor name='TeraRanger2' type='ray'>
-          <visualize>0</visualize>
+          <visualize>1</visualize>
           <update_rate>50</update_rate>
           <ray>
             <scan>
