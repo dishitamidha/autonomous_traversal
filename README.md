@@ -2,6 +2,10 @@
 Autonomous Traversal with obstacle avoidance of a 4 wheeled skid steer bot using GPS, LiDAR and Ultrasonic Sensors
 
 #### [link to python script](scripts/autonomous_traversal4.py)
+## The bot
+<p align="center">
+<img src="https://user-images.githubusercontent.com/75261680/131234369-738564b1-f7b0-4a17-b933-72ef1b60190f.png" alt="obs1" width="550"/>
+</p>
 
 ### Scenario 1 
 Spotlight marks the goal
